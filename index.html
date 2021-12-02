@@ -1,0 +1,607 @@
+---
+title: "Hello Flow"
+author: "Anjan K Dasgupta"
+categories: ["R"]
+tags: ["R Markdown", "plot", "regression"]
+---
+
+<script src="{{< blogdown/postref >}}index_files/header-attrs/header-attrs.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+
+
+<div id="a-bit-of-history" class="section level1">
+<h1>A bit of history</h1>
+<ul>
+<li>In the year 1954, Wallace Coulter first proposed to devise an instrument, which can electronically measure cells in a conductive liquid. This form the basis of a flow cytometer.</li>
+<li>The first fluorescence-based cytometric device (ICP 11) was developed in 1968 by Wolfgang Göhde from the University of Münster, Germany.</li>
+<li>Göhde’s major contribution to the field of flow cytometry was the creation of the flow chamber, which remains in use today.</li>
+<li>The original name - pulse cytophotometry - 1978 name changed to flow cytometry, at</li>
+<li>FACS instrument from Becton Dickinson (1974) emerged</li>
+<li>Epics from Coulter came in the market (1977/78) .</li>
+<li>Future of Cytof (mass cytometry).</li>
+</ul>
+</div>
+<div id="the-basic-of-basics" class="section level1">
+<h1>The basic of basics</h1>
+<table>
+<thead>
+<tr class="header">
+<th>Fluoresence Spectrometer</th>
+<th>Flow Cytometer</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Molecules,Nanoparticles <span class="math inline">\(\le 500nm\)</span></td>
+<td>Cells (<span class="math inline">\(\mu m\)</span>)</td>
+</tr>
+<tr class="even">
+<td>No statistical Information</td>
+<td>Population behavior</td>
+</tr>
+<tr class="odd">
+<td>Single molecule data unavailable</td>
+<td>Single cell data</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="block-diagrams-fluoresence" class="section level1">
+<h1>Block diagrams Fluoresence</h1>
+<div class="figure">
+<img src="Images/fluo1.png" alt="" />
+<p class="caption">Excitation of light leads to scattering and emission</p>
+</div>
+</div>
+<div id="block-diagram-scattering" class="section level1">
+<h1>Block Diagram Scattering</h1>
+<div class="figure">
+<img src="Images/scatter.png" alt="" />
+<p class="caption">Two major scattering classes</p>
+</div>
+</div>
+<div id="block-digram-for-a-flow-cytometer" class="section level1">
+<h1>Block Digram for a flow cytometer</h1>
+<div class="figure">
+<img src="Images/flow1.png" style="width:75.0%" alt="" />
+<p class="caption">The flow cytometry scheme</p>
+</div>
+</div>
+<div id="the-integration-of-cytometric-platform-with-data-science" class="section level1">
+<h1>The integration of cytometric platform with data science</h1>
+<ul>
+<li>Instrument Design Fluidics,Optics,Electronics</li>
+<li>Synthesis of Fluorescent probes,Qdots</li>
+<li>Gaussian mixture models</li>
+<li>Techniques like
+<ul>
+<li>t-SNE(T-stochastic neighbor embedding)</li>
+<li>Machine learning (supervised &amp; K-free models)</li>
+<li>SPADE Spanning-tree progression analysis of density-normalized events)</li>
+<li>PCA (Principal component analysis)</li>
+<li>FLOCK (FLOw clustering without K).</li>
+</ul></li>
+</ul>
+</div>
+<div id="commercial-software-and-data" class="section level1">
+<h1>Commercial software and Data</h1>
+<p><strong>Software packages</strong>
+- FlowJo,
+- FCS Express</p>
+<p><strong>Public Data Base</strong></p>
+<strong>Data repository</strong>
+</p>
+<p><a href="https://flowrepository.org/public_experiment_representations?top=10" class="uri">https://flowrepository.org/public_experiment_representations?top=10</a></p>
+<p><img src="Images/flowrepo1.png" /></p>
+<p><a href="https://www.cytobank.org/" class="uri">https://www.cytobank.org/</a></p>
+<p><img src="Images/flowrepo2.png" /></p>
+</div>
+<div id="data-mining-in-flow-cytometry" class="section level1">
+<h1>Data mining in Flow Cytometry</h1>
+<ul>
+<li>R platform has been pionner in the computational flow cytometry</li>
+<li>Most accepted form of data format in a flow platform is a .FCS.</li>
+<li>In R the .FCS files are read as S4 objects
+Here is a simple R command to call a flow cytometric file</li>
+</ul>
+</div>
+<div id="r-command-to-call-a-fcs-file" class="section level1">
+<h1>R command to call a FCS file</h1>
+<pre class="r"><code>library(flowCore)
+fname=&#39;./Compensation Controls/Patient_17_Unstained.fcs&#39;
+ff &lt;- read.FCS(fname)
+typeof(ff)</code></pre>
+<pre><code>## [1] &quot;S4&quot;</code></pre>
+</div>
+<div id="what-is-s4" class="section level1">
+<h1>What is S4 ?</h1>
+<ul>
+<li><p>The object that is returned above is of S4 type</p></li>
+<li><p>An S4 class definition is quite a bit different from a class definition in other programming languages such as C# and Python.</p></li>
+<li><p>An S4 class encapsulates data fields inside a setClass function, but doesn’t encapsulate class methods.</p>
+</p>
+<p>Instead, S4 class methods are defined by pairs of special R functions named <strong>setMethod</strong> and <strong>setGeneric</strong>.</p></li>
+<li><p><a href="https://advanced-r-solutions.rbind.io/s4.html" class="uri">https://advanced-r-solutions.rbind.io/s4.html</a></p></li>
+</ul>
+</div>
+<div id="s4-2-dataframes" class="section level1">
+<h1>S4 2 DataFrames</h1>
+<pre><code>##  [1] &quot;FSC.A&quot;             &quot;FSC.H&quot;             &quot;FSC.W&quot;            
+##  [4] &quot;SSC.A&quot;             &quot;SSC.H&quot;             &quot;SSC.W&quot;            
+##  [7] &quot;Alexa.Fluor.488.A&quot; &quot;PE.A&quot;              &quot;APC.A&quot;            
+## [10] &quot;PerCP.A&quot;           &quot;APC.Cy7.A&quot;         &quot;Time&quot;</code></pre>
+</div>
+<div id="two-important-computaional-problems-specific-to-flow-cytometry" class="section level1">
+<h1>Two important computaional problems specific to Flow Cytometry</h1>
+<ul>
+<li>Gating</li>
+<li>Compensation</li>
+</ul>
+</div>
+<div id="a-typical-flow-plot-for-unlabelled-samples" class="section level1">
+<h1>A typical Flow plot for unlabelled samples</h1>
+<pre class="r"><code>plot(FSC.H,SSC.H,pch=16,cex=0.2)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="typical-target-objectives-in-flow-analysis" class="section level1">
+<h1>Typical target objectives in Flow analysis</h1>
+<ul>
+<li>Immuno phenotyping</li>
+<li>Cell Cycle Analysis</li>
+<li>Immunophenotyping</li>
+<li>Cell counting and sorting</li>
+<li>Biomarker detection</li>
+<li>Chemotherapy Drug assessment<br />
+</li>
+<li>Stress (ROS) analysis</li>
+</ul>
+</div>
+<div id="typical-analyte-pbmc" class="section level1">
+<h1>Typical analyte PBMC</h1>
+<p><img src="Images/pbmc.png" /></p>
+</div>
+<div id="automated-gating-flow-clust-box-cox" class="section level1">
+<h1>Automated gating Flow Clust (Box-Cox)</h1>
+<pre class="r"><code># Using the flowClust code to remove outliers
+library(flowClust)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;flowClust&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     box</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     Map</code></pre>
+<pre class="r"><code>fname=&#39;./Compensation Controls/Patient_17_Unstained.fcs&#39;
+ff &lt;- flowCore::read.FCS(fname)
+df=data.frame(ff@exprs[,1:6])
+res1 &lt;- flowClust(df,
+varNames=c(&quot;FSC.H&quot;, &quot;SSC.H&quot;), K=1) </code></pre>
+<pre><code>## Using the serial version of flowClust</code></pre>
+<pre class="r"><code>df2=Subset(df,res1)
+res2&lt;-flowClust(df2, varNames=c(&quot;FSC.H&quot;, &quot;SSC.H&quot;), K=1:6, B=100)
+criterion(res2,&quot;BIC&quot;)</code></pre>
+<pre><code>## [1] -1392214 -1378289 -1361787 -1354436 -1353362 -1350507</code></pre>
+<pre class="r"><code># There will be 6 clusters 
+# 6 clusters 
+plot(res2[[6]], data=df2, level=0.8, z.cutoff=0)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre><code>## Rule of identifying outliers: 80% quantile</code></pre>
+<pre class="r"><code># Now suppose we want to identify a particular cluster
+# Let us identify the clusters 
+ik1=which(res2[[6]]@label==1)
+ik2=which(res2[[6]]@label==2)
+ik3=which(res2[[6]]@label==3)
+ik4=which(res2[[6]]@label==4)
+ik5=which(res2[[6]]@label==5)
+ik6=which(res2[[6]]@label==6)
+attach(df2)</code></pre>
+<pre><code>## The following objects are masked from df:
+## 
+##     FSC.A, FSC.H, FSC.W, SSC.A, SSC.H, SSC.W</code></pre>
+</div>
+<div id="gating-out-a-single-cluster-out" class="section level1">
+<h1>Gating out a single cluster out</h1>
+<p>Now suppose we want to gate one and see the other 5 clusters</p>
+<pre class="r"><code>plot(FSC.H,SSC.H,pch=16,cex=0.3,col=&quot;red&quot;)
+
+points(FSC.H[ik4],SSC.H[ik4],pch=16,cex=0.3)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="gating-the-cell-debris-out" class="section level1">
+<h1>Gating the cell debris out</h1>
+<pre class="r"><code>plot(FSC.H[-ik4],SSC.H[-ik4],pch=16,cex=0.3)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="flow-peaks" class="section level1">
+<h1>Flow peaks</h1>
+<p>FlowPeaks is a fast unsupervised clustering for flow cytometry data via K-means and density peak finding, 2012, Bioinformatics 8(15):2052-8</p>
+<pre class="r"><code>library(flowPeaks)
+fp&lt;-flowPeaks(asinh(ff@exprs[,c(1,2)]))
+plot(fp) #an alternative of using summary(fp) </code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" />
+# The prescribed manual clustering</p>
+<p><img src="Images/manual_split.png" /></p>
+</div>
+<div id="origin-of-doublets" class="section level1">
+<h1>Origin of Doublets</h1>
+<ul>
+<li><p>A doublet is a <strong>single event</strong> that actually consists of 2 independent particles.</p></li>
+<li><p>The cytometer classified these particles as a <strong>single event</strong> because they passed through the interrogation point very close to one another.</p></li>
+<li><p>In other words, the particles were so close together when they passed through this laser spot, that the instrument was incapable of distinguishing them as <strong>individual events</strong> or particles.</p></li>
+</ul>
+</div>
+<div id="a-non-rocket-science-approach" class="section level1">
+<h1>A non-rocket-science approach</h1>
+<p>What has been seen in case of the elimination of doublets the conventional clustering method for gating fails , as <strong>gating</strong> in this case has something to do with whether the cells are present in singlets or doublets. The common sense knowledge that is used in this case is that points with higher area-height ratio are more likely to be doublets. This is true for both the forward and side scattering.</p>
+</div>
+<div id="a-simple-combined-algo" class="section level1">
+<h1>A simple combined algo</h1>
+<ul>
+<li>X=log(FSC.A) and Y=log(FSC.H)</li>
+<li>X1=log(SSC.A) and Y1=log(SSC.H)</li>
+<li>Find slopes &amp; intercepts (m,c) and (m1,c1) of Y~X and Y1~X1</li>
+<li>Find ik for which (Y&gt;mX+c) &amp; (Y1&gt;m1X1+C) are simultaneously satisfied.</li>
+</ul>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="effect-of-doublet-filtering-on-the-fsc-ssc-clusters" class="section level1">
+<h1>Effect of doublet filtering on the FSC-SSC clusters</h1>
+<pre class="r"><code>plot(log(SSC.A),log(FSC.A),pch=16,cex=0.5,col=&quot;blue&quot;,xlab=&#39;log(AREA)&#39;,ylab=&#39;log(HEIGHT)&#39;)
+points(log(SSC.A[ik]),log(FSC.A[ik]),pch=16,cex=0.5,col=&quot;brown&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>hist(SSC.H,100)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>ik=which(SSC.H&gt;40000 &amp; FSC.H &gt;40000)
+FSC.H1=FSC.H[ik]
+SSC.H1=SSC.H[ik]
+par(mfrow=c(1,2))
+plot(FSC.H,SSC.H,pch=16,cex=0.1,col=&quot;black&quot;)
+points(FSC.H1,SSC.H1,pch=16,cex=0.1,col=&quot;red&quot;)
+plot(FSC.H1,SSC.H1,pch=16,cex=0.1,col=&quot;black&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+</div>
+<div id="compensation" class="section level1">
+<h1>Compensation</h1>
+<ul>
+<li>All fluorochromes have excitation and emission spectra. The excitation spectrum is a range of light wavelengths that add energy to a fluorochrome, causing it to emit light in another range of wavelengths, the emission spectrum.</li>
+<li>Within a flow cytometer, the appropriate ranges of excitation and emission wavelengths are selected by bandpass filters.</li>
+<li>However, when emission spectra overlap, fluorescence from more than one fluorochrome may be detected.</li>
+<li>To correct for this spectral overlap, a process of fluorescence compensation is used. This ensures that the fluorescence detected in a particular detector derives from the fluorochrome that is being measured.</li>
+<li>In the example below, following excitation with 488 nm light, PE emission is largely detected in the detector specific for PE but the emission tail lies within the range of the bandpass filter used for detection of PE-Cy5.</li>
+<li>This will be seen as “false positive” signals in the PE-Cy5 channel and fluorescence compensation is needed to correct for this overlap.</li>
+</ul>
+<p><img src="Images/compensation.png" />
+# An example
+In this hypothetical experiment, cells were stained with FITC CD3 and with a PE isotype control, and collected at different compensation values to correct for the FITC spillover into the PE channel (panel 1 is uncompensated; 2-5 are for increasing compensation values).
+<img src="Images/quiz1.png" />
+## The questions
+- Which panel represents proper compensation?
+- On what basis did you make this determination?</p>
+<div id="twocolor-compensation" class="section level2">
+<h2>Twocolor compensation</h2>
+<p><a href="http://www.drmr.com/compensation/" class="uri">http://www.drmr.com/compensation/</a>
+Let’s consider an experiment where we stain human peripheral blood lymphocytes with
+- FITC CD3 <span class="math inline">\(\rightarrow ^{Stains}\)</span> CD4 and CD8 T cells)
+- PE CD8 <span class="math inline">\(\rightarrow ^{Stains}\)</span> CD8 T cells and, less brightly, NK cells.</p>
+<pre class="r"><code>library(DiagrammeR)
+
+grViz(&quot;
+  digraph boxes_and_circles {
+  node[shape=circle]
+  FITC_CD3;PE_CD8
+  node[shape=box]
+  CD4_T_cells;CD8_T_cells;NK_cells;B_cells
+  PBCLymphocytes-&gt;B_cells;
+  PBCLymphocytes-&gt;FITC_CD3;
+  PBCLymphocytes-&gt;PE_CD8;
+  FITC_CD3-&gt;CD4_T_cells;
+  FITC_CD3-&gt;CD8_T_cells;
+  PE_CD8-&gt;CD8_T_cells;
+  PE_CD8-&gt;NK_cells;
+
+  }&quot;)</code></pre>
+<div id="htmlwidget-1" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"diagram":"\n  digraph boxes_and_circles {\n  node[shape=circle]\n  FITC_CD3;PE_CD8\n  node[shape=box]\n  CD4_T_cells;CD8_T_cells;NK_cells;B_cells\n  PBCLymphocytes->B_cells;\n  PBCLymphocytes->FITC_CD3;\n  PBCLymphocytes->PE_CD8;\n  FITC_CD3->CD4_T_cells;\n  FITC_CD3->CD8_T_cells;\n  PE_CD8->CD8_T_cells;\n  PE_CD8->NK_cells;\n\n  }","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="four-populations" class="section level1">
+<h1>Four populations</h1>
+<ul>
+<li>We should have four major populations of cells:
+-B cells, which will be unstained
+-CD4 T cells, which will have only fluorescein (CD3) fluorescence
+<ul>
+<li>CD8 T cells, which will have both fluorescein and PE fluorescence</li>
+<li>NK cells, which will only have PE fluorescence (they do not express CD3).</li>
+</ul></li>
+</ul>
+</div>
+<div id="qunatitative-measures" class="section level1">
+<h1>Qunatitative Measures</h1>
+<ul>
+<li>Assume CD3 fluorescence (FITC) on T cells gives 100 units of true fluorescence (i.e., the amount of fluorescence in FL1 when no compensation is set and no PE had been included in the stain);</li>
+<li>CD8 fluorescence on CD8 T cells is 400 units.</li>
+<li>CD8 on NK is 50 units.</li>
+</ul>
+</div>
+<div id="measured-fluorescence-for-each-cell" class="section level1">
+<h1>Measured fluorescence for each cell</h1>
+<ul>
+<li><p>Let us assume that the <strong>spillover constants have been measured at 15% and 1%</strong> (from the compensation samples)?</p></li>
+<li><p>For B cells, it will be zero in both FL1 and FL2 (remember, we are ignoring autofluorescence for the time being).</p></li>
+<li><p>CD4 T cells will have 100 in FL1, and 15 in FL2 (i.e., 15% of the 100 units of fluorescein signal will appear in FL2).</p></li>
+<li><p>NK cells will have 50 units in FL2, and 0.5 units in FL1 (i.e., 1% of the 10 units of PE signal).</p></li>
+<li><p>CD8 T cells will have 104 units in FL1 (100 units of fluorescein CD3 signal plus 1% of the 400 units of PE CD8 signal), and 415 units FL2 (400 units of PE signal plus 15% of the 100 units of fluorescein signal).</p></li>
+</ul>
+</div>
+<div id="mathematical-formulea-for-2-color-compensation" class="section level1">
+<h1>Mathematical formulea for 2 color compensation</h1>
+<p><span class="math display">\[
+FL1_{measured}=FITC_{true}+0.01\cdot PE_{true}\\
+FL2_{measured}=0.15\cdot FITC_{true} +PE_{true}
+\]</span>
+## Finding the true value of fluoresence
+Let’s apply these equations to our measured values for CD8 T cells (FL1 = 104, FL2 = 415). We may find PE true and FITC true from:</p>
+</div>
+<div id="multicolor-compensation" class="section level1">
+<h1>Multicolor compensation</h1>
+<p>Multi-color compensation is a simple extension of two-color compensation:</p>
+<p>M(1) = A(11) x F(1) + A(21) x F(2) + … A(n1) x F(n)
+M(2) = A(12) x F(1) + A(22) x F(2) + … A(n2) x F(n)
+…
+M(n) = A(1n) x F(1) + A(2n) x F(2) + … A(nn) x F(n)</p>
+<p>where M(i) is the measured fluorescence in channel i; F(i) is the amount of fluorescent molecule (i) present on the cell of interest, and A(ij) is the ratio of the fluorescence of molecule (i) in channel (i) to the fluorescence of molecule (i) in channel (j).</p>
+</div>
+<div id="immuno-phenotyping" class="section level1">
+<h1>Immuno Phenotyping</h1>
+<p>A good link to start with
+<a href="https://www.abcam.com/protocols/flow-cytometry-immunophenotyping" class="uri">https://www.abcam.com/protocols/flow-cytometry-immunophenotyping</a></p>
+</div>
+<div id="basic-idea" class="section level1">
+<h1>Basic Idea</h1>
+<ul>
+<li>Antibodies are used to identify cells by detecting specific antigens (markers) expressed by these cells</li>
+<li>These markers are usually functional membrane proteins involved in cell communication, adhesion, or metabolism.</li>
+<li>Immunophenotyping using flow cytometry has become the method of choice in identifying and sorting cells within complex populations, for example the analysis of immune cells in a blood sample.</li>
+</ul>
+</div>
+<div id="flow-cytometric-analysis-of-leukemia---a-case-study" class="section level1">
+<h1>FLOW CYTOMETRIC ANALYSIS OF LEUKEMIA - A case study</h1>
+</div>
+<div id="how-defined-is-leukomia" class="section level1">
+<h1>How defined is leukomia</h1>
+<ul>
+<li>Leukemia is a group of blood cancers that usually begin in the bone marrow and result in high numbers of abnormal blood cells.They are considered tumors of the hematopoietic and lymphoid tissues</li>
+<li>Symptoms may include bleeding and bruising, fatigue, fever, and an increased risk of infections</li>
+<li>Diagnosis is typically made by blood tests or bone marrow biopsy.
+and from <strong>flow cytometry</strong></li>
+<li>Four main types of leukemia
+—acute lymphoblastic leukemia (ALL),
+<ul>
+<li>acute myeloid leukemia (AML),<br />
+</li>
+<li>chronic lymphocytic leukemia (CLL)</li>
+<li>and chronic myeloid leukemia (CML).[10][11]</li>
+</ul></li>
+</ul>
+</div>
+<div id="diagnostic-method" class="section level1">
+<h1>Diagnostic method</h1>
+<ul>
+<li>Blood cells are immunophenotypically coated with fluorescent antibodies at the time of the sample preparation, and then the sample tube is placed in the flow cytometry device.</li>
+</ul>
+</div>
+<div id="microscopy-based-assessment" class="section level1">
+<h1>Microscopy based assessment</h1>
+<p><img src="Images/microscopy.png" /></p>
+</div>
+<div id="flow-based-guess-with-unlabelled-samples" class="section level1">
+<h1>Flow based guess with unlabelled samples</h1>
+<p><img src="Images/unlabelled.png" />
+# Algoritmic problem
+- Identifying the clusters with cell type
+- Choosing between the manual and computaional method (doctors like the first!)</p>
+</div>
+<div id="gating-the-blast" class="section level1">
+<h1>Gating the Blast</h1>
+<p>Blood cells are not fully developed and are called blasts. Gating out the blasts is thus nontrivial.</p>
+</div>
+<div id="probes" class="section level1">
+<h1>Probes</h1>
+<ul>
+<li><p>Construct SSC-H vs CD45
+to gate the blast population.</p></li>
+<li><p>Next CD19 (<em>CD19 is a B cell–specific antigen expressed on chronic lymphocytic leukemia (CLL) cells</em>)vs CD10 (<em>The human CD10 antigen is present in common acute lymphoblastic leukemia as a cancer specific antigen</em> ) scatterplot.</p></li>
+<li><p>The propensity and type of leukomia and efficacy of chemotherapy with time can be determined.</p></li>
+</ul>
+</div>
+<div id="the-classic-blmg-gates" class="section level1">
+<h1>The classic BLMG gates</h1>
+<p><img src="Images/BLMG_gates.png" /></p>
+</div>
+<div id="the-antibodies" class="section level1">
+<h1>The antibodies</h1>
+<p><img src="Images/antibodylist.png" /></p>
+</div>
+<div id="a-real-time-leukomia-file" class="section level1">
+<h1>A real time Leukomia File</h1>
+<pre class="r"><code>library(flowCore)
+fname1=&#39;./soumya/F-01,2f,17_BM_TH_ALOT_002.fcs&#39;
+fname2=&#39;./soumya/F-283,2f,17_PB_KT_ALOT_002.fcs&#39; 
+ffL &lt;- flowCore::read.FCS(fname1)
+ffC &lt;-flowCore::read.FCS(fname2)
+
+dfL=data.frame(ffL@exprs)
+dfC=data.frame(ffC@exprs)
+
+summary(dfL)</code></pre>
+<pre><code>##       Time            FSC.A            FSC.H            SSC.A         
+##  Min.   :  53.6   Min.   : 10144   Min.   : 10024   Min.   :   155.4  
+##  1st Qu.: 565.5   1st Qu.: 60168   1st Qu.: 43537   1st Qu.:  1407.0  
+##  Median :1085.2   Median : 79984   Median : 57508   Median :  1939.3  
+##  Mean   :1083.5   Mean   : 93186   Mean   : 61014   Mean   :  3243.5  
+##  3rd Qu.:1595.3   3rd Qu.:109668   3rd Qu.: 73634   3rd Qu.:  2998.8  
+##  Max.   :2111.9   Max.   :262143   Max.   :258709   Max.   :262143.0  
+##      SSC.H            FITC.A               PE.A          PerCP.Cy5.5.A     
+##  Min.   :   156   Min.   :   -51.45   Min.   :   -81.9   Min.   :  -105.0  
+##  1st Qu.:  1101   1st Qu.:   138.60   1st Qu.:   444.1   1st Qu.:   536.5  
+##  Median :  1443   Median :   213.15   Median :   828.5   Median :  1029.0  
+##  Mean   :  1914   Mean   :   722.33   Mean   :  1237.3   Mean   :  1814.5  
+##  3rd Qu.:  1943   3rd Qu.:   348.60   3rd Qu.:  1395.5   3rd Qu.:  1857.5  
+##  Max.   :224332   Max.   :262143.00   Max.   :239286.6   Max.   :262143.0  
+##     PE.Cy7.A            APC.A              APC.H7.A            V450.A        
+##  Min.   :   -90.3   Min.   :   -89.28   Min.   :  -224.1   Min.   :  -439.3  
+##  1st Qu.:  1098.3   1st Qu.:    70.68   1st Qu.:   306.0   1st Qu.:   213.9  
+##  Median :  2794.6   Median :   169.26   Median :   580.3   Median :   378.4  
+##  Mean   :  4506.2   Mean   :  1781.22   Mean   :  1516.5   Mean   :  1291.5  
+##  3rd Qu.:  6019.6   3rd Qu.:   778.41   3rd Qu.:  1208.1   3rd Qu.:   670.5  
+##  Max.   :262143.0   Max.   :262143.00   Max.   :262143.0   Max.   :262143.0  
+##     V500c.A        
+##  Min.   :  -284.1  
+##  1st Qu.:   159.8  
+##  Median :   316.2  
+##  Mean   :  1187.2  
+##  3rd Qu.:   621.0  
+##  Max.   :262143.0</code></pre>
+</div>
+<div id="cd45v500c.a-cd-19pe.cy7.a-and-cd-10-apc.a" class="section level1">
+<h1>CD45(V500c.A) CD 19(PE.Cy7.A) and CD 10 (APC.A)</h1>
+<p><img src="Images/minimal_list.png" /></p>
+<pre class="r"><code>attach(dfL)</code></pre>
+<pre><code>## The following objects are masked from df2:
+## 
+##     FSC.A, FSC.H, SSC.A, SSC.H</code></pre>
+<pre><code>## The following objects are masked from df:
+## 
+##     APC.A, FSC.A, FSC.H, PE.A, SSC.A, SSC.H, Time</code></pre>
+<pre class="r"><code>X=log(FSC.A)
+Y=log(FSC.H)
+X1=log(SSC.A)
+Y1=log(SSC.H)
+g=lm(Y~X)
+g1=lm(Y1~X1)
+ik=which( Y &gt;g$coefficients[2]*X+g$coefficients[1])
+par(mfrow=c(2,2))
+plot(X,Y,pch=16,cex=0.2,col=&quot;blue&quot;,xlab=&#39;log(AREA)&#39;,ylab=&#39;log(HEIGHT)&#39;,main=&quot;FWD&quot;)
+points(X[ik],Y[ik],pch=16,cex=0.2,col=&quot;brown&quot;)
+fsc=FSC.H[ik]
+ssc=SSC.H[ik]
+fcd45=V500c.A[ik]
+fcd19=PE.Cy7.A[ik]
+fcd10=APC.A[ik]</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code>library(flowClust)
+res1 &lt;- flowClust(dfL,
+varNames=c(&quot;V500c.A&quot;,&quot;SSC.H&quot;), K=1) </code></pre>
+<pre><code>## Using the serial version of flowClust</code></pre>
+<pre class="r"><code>df2=Subset(dfL,res1)
+res2&lt;-flowClust(df2, varNames=c(&quot;V500c.A&quot;,&quot;SSC.H&quot;), K=1:4, B=100)
+criterion(res2,&quot;BIC&quot;)</code></pre>
+<pre><code>## [1] -988502.2 -986779.2 -986474.7 -986135.8</code></pre>
+<pre class="r"><code># There will be 6 clusters 
+# 6 clusters 
+plot(res2[[4]], data=df2, level=0.5, z.cutoff=0)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre><code>## Rule of identifying outliers: 50% quantile</code></pre>
+<pre class="r"><code>res2.den &lt;- density(res2[[4]], data = df2)
+plot(res2.den,type=&quot;image&quot;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre class="r"><code>res1 &lt;- flowClust(dfL,
+varNames=c(&quot;APC.A&quot;,&quot;PE.Cy7.A&quot;), K=1) </code></pre>
+<pre><code>## Using the serial version of flowClust</code></pre>
+<pre class="r"><code>df2=Subset(dfL,res1)
+res2&lt;-flowClust(df2, varNames=c(&quot;APC.A&quot;,&quot;PE.Cy7.A&quot;), K=1:4, B=100)
+criterion(res2,&quot;BIC&quot;)</code></pre>
+<pre><code>## [1] -1141117 -1123068 -1119284 -1117204</code></pre>
+<pre class="r"><code># There will be 6 clusters 
+# 6 clusters 
+plot(res2[[4]], data=df2, level=0.5, z.cutoff=0)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre><code>## Rule of identifying outliers: 50% quantile</code></pre>
+<pre class="r"><code>summary(dfL)</code></pre>
+<pre><code>##       Time            FSC.A            FSC.H            SSC.A         
+##  Min.   :  53.6   Min.   : 10144   Min.   : 10024   Min.   :   155.4  
+##  1st Qu.: 565.5   1st Qu.: 60168   1st Qu.: 43537   1st Qu.:  1407.0  
+##  Median :1085.2   Median : 79984   Median : 57508   Median :  1939.3  
+##  Mean   :1083.5   Mean   : 93186   Mean   : 61014   Mean   :  3243.5  
+##  3rd Qu.:1595.3   3rd Qu.:109668   3rd Qu.: 73634   3rd Qu.:  2998.8  
+##  Max.   :2111.9   Max.   :262143   Max.   :258709   Max.   :262143.0  
+##      SSC.H            FITC.A               PE.A          PerCP.Cy5.5.A     
+##  Min.   :   156   Min.   :   -51.45   Min.   :   -81.9   Min.   :  -105.0  
+##  1st Qu.:  1101   1st Qu.:   138.60   1st Qu.:   444.1   1st Qu.:   536.5  
+##  Median :  1443   Median :   213.15   Median :   828.5   Median :  1029.0  
+##  Mean   :  1914   Mean   :   722.33   Mean   :  1237.3   Mean   :  1814.5  
+##  3rd Qu.:  1943   3rd Qu.:   348.60   3rd Qu.:  1395.5   3rd Qu.:  1857.5  
+##  Max.   :224332   Max.   :262143.00   Max.   :239286.6   Max.   :262143.0  
+##     PE.Cy7.A            APC.A              APC.H7.A            V450.A        
+##  Min.   :   -90.3   Min.   :   -89.28   Min.   :  -224.1   Min.   :  -439.3  
+##  1st Qu.:  1098.3   1st Qu.:    70.68   1st Qu.:   306.0   1st Qu.:   213.9  
+##  Median :  2794.6   Median :   169.26   Median :   580.3   Median :   378.4  
+##  Mean   :  4506.2   Mean   :  1781.22   Mean   :  1516.5   Mean   :  1291.5  
+##  3rd Qu.:  6019.6   3rd Qu.:   778.41   3rd Qu.:  1208.1   3rd Qu.:   670.5  
+##  Max.   :262143.0   Max.   :262143.00   Max.   :262143.0   Max.   :262143.0  
+##     V500c.A        
+##  Min.   :  -284.1  
+##  1st Qu.:   159.8  
+##  Median :   316.2  
+##  Mean   :  1187.2  
+##  3rd Qu.:   621.0  
+##  Max.   :262143.0</code></pre>
+</div>
+<div id="flow-peaks-1" class="section level1">
+<h1>Flow peaks</h1>
+<p>FlowPeaks is a fast unsupervised clustering for flow cytometry data via K-means and density peak finding, 2012, Bioinformatics 8(15):2052-8</p>
+<pre class="r"><code>library(flowPeaks)
+fp&lt;-flowPeaks(asinh(ffL@exprs[,c(13,4)]))</code></pre>
+<pre><code>## 
+## Starting the flow Peaks analysis...
+## 
+##     Task A: compute kmeans...</code></pre>
+<pre><code>##         step 0, set the intial seeds, tot.wss=1040.56
+##         step 1, do the rough EM, tot.wss=712.991 at 0.143064 sec
+##         step 2, do the fine transfer of Hartigan-Wong Algorithm
+##                  tot.wss=703.557 at 0.252314 sec</code></pre>
+<pre><code>##         ...finished summarization at 0.254 sec
+## 
+##     Task B: find peaks...</code></pre>
+<pre><code>## finished at 0.449 sec</code></pre>
+<p>#The Beauty of SOM</p>
+<pre class="r"><code>plot(fp)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+</div>
+<div id="some-other-important-applications" class="section level1">
+<h1>Some other important applications</h1>
+<ul>
+<li>Exploring the Cell Death
+<a href="https://rpubs.com/ANJANKRDASGUPTA/706527" class="uri">https://rpubs.com/ANJANKRDASGUPTA/706527</a></li>
+<li>Use ofFlow cytometry in ROS detection
+<a href="https://rpubs.com/ANJANKRDASGUPTA/707350" class="uri">https://rpubs.com/ANJANKRDASGUPTA/707350</a></li>
+</ul>
+<p><a href="https://rpubs.com/ANJANKRDASGUPTA/706017" class="uri">https://rpubs.com/ANJANKRDASGUPTA/706017</a></p>
+</div>
+<div id="take-home-lessons" class="section level1">
+<h1>Take home lessons</h1>
+<ul>
+<li>Flow cytometry serves as a magic solution in complex diagnostic problems</li>
+<li>Poses a multitude of technological computational and data sciece challenges to solve complex biomdical or cell biology problems.<br />
+</li>
+<li>The new methodology would demand computational platform even more as the commercial flow cytometry software like flowJO may ot handle the new challenges that may emerge from newer technques like CyTof (mass cytometry, takes advantage of the low spectral overlap between heavy metal isotopes) or microfluidics based flow cytometry.</li>
+<li>Multidimesional gating and compensation from multi-color flow cytometry are computationally chalenging probelms.</li>
+</ul>
+</div>
+<div id="acknowledgements" class="section level1">
+<h1>Acknowledgements</h1>
+<ul>
+<li>Prof. Bhaswati Ganguly(CU) - Who introduced me to R</li>
+<li>Dr. Arnab Chattopadhyay, who introduced me to immunophenotyping</li>
+<li>Prof. Senroy (CU) ,Dr. Jyoti Shaw &amp; Dr. Moumita Chattapadhya (AU) for initiating some work on flow cytometry based clustering.</li>
+</ul>
+</div>
+<div id="lastly" class="section level1">
+<h1>Lastly</h1>
+<p><img src="Images/thankyou.png" /></p>
+</div>
